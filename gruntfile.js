@@ -6,6 +6,9 @@ module.exports = function (grunt) {
     var packageFile = grunt.file.readJSON("package.json");
     var countriesJSON = grunt.file.readJSON("node_modules/country-region-data/data.json");
 
+    addIsleOfManIntoUnitedKingdom();
+    fixKazakstanShortcode();
+
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-template");
 
@@ -81,6 +84,25 @@ module.exports = function (grunt) {
         });
 
         return js;
+    }
+
+    function addIsleOfManIntoUnitedKingdom() {
+        for(var i = 0; i < countriesJSON.length; i++) {
+            if(countriesJSON[i].countryShortCode === "GB") {
+                countriesJSON[i].regions.push({ name: 'Isle of Man', shortCode: 'IM' })
+                break;
+            }
+        }
+    }
+
+    function fixKazakstanShortcode() {
+        for(var i = 0; i < countriesJSON.length; i++) {
+            if (countriesJSON[i].countryShortCode === "KZ") {
+                var bayqongyrIndex = countriesJSON[i].regions.findIndex(function(elem) { return elem.name === 'Bayqongyr' })
+                countriesJSON[i].regions[bayqongyrIndex] = { name: 'Bayqongyr', shortCode: 'Bayqongyr' };
+                break;
+            }
+        }
     }
 
 
